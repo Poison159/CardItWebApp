@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardItWebApp", "CardItWebApp\CardItWebApp.csproj", "{5D780627-3713-4082-B29B-E83B3BE3C8AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D780627-3713-4082-B29B-E83B3BE3C8AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D780627-3713-4082-B29B-E83B3BE3C8AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D780627-3713-4082-B29B-E83B3BE3C8AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D780627-3713-4082-B29B-E83B3BE3C8AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA6CE12C-5CA7-4716-A0E5-95E149BC9255}
+	EndGlobalSection
+EndGlobal
