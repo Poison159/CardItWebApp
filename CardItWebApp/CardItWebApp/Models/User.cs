@@ -15,6 +15,8 @@ namespace CardItWebApp.Models
 
         public string MobileNumber { get; set; }
 
+        public string Password { get; set; }
+
         public ICollection<Card> Cards { get; set; }
 
     }

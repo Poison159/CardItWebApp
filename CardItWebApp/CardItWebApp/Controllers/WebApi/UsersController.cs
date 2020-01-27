@@ -15,11 +15,86 @@ namespace CardItWebApp.Controllers
         
 
         // GET api/users/x
-        public User Get(int id)
+        public IHttpActionResult Get(int id)
         {
             var user = dbContext.Users.Where(x => x.Id == id).FirstOrDefault();
 
-            return user;
+            if (user is null)
+                //User doesn't exist
+                return NotFound();
+
+            return Ok(user);
+        }
+
+        [Route("api/GetRegisterUser")]
+        public IHttpActionResult GetRegisterUser(string name, string email, string mobileNumber, string password)
+        {
+            //Check if user exists
+            var encryptedPassword = EncryptPassword(password);
+
+            var user = dbContext.Users.Where(x => x.Password == encryptedPassword).FirstOrDefault();
+
+            if (user != null)
+                //User already exists
+                return NotFound();
+
+            User newUser = new User
+            {
+                Name = name,
+                Email = email,
+                MobileNumber = mobileNumber,
+                Password = EncryptPassword(password)
+            };
+
+            dbContext.Users.Add(newUser);
+
+            dbContext.SaveChanges();
+
+            newUser.Password = null;
+
+            return Ok(newUser);
+        }
+
+        [Route("api/GetUserLogin")]
+        public IHttpActionResult GetUserLogin(string name, string email, string mobileNumber, string password)
+        {
+            //Check if user exists
+            var encryptedPassword = EncryptPassword(password);
+
+            var user = dbContext.Users.Where(x => x.Password == encryptedPassword).FirstOrDefault();
+
+            if (user is null)
+                //User doesn't exist
+                return NotFound();
+
+            bool applyEdits = false;
+
+            //Check for changes
+            if (user.Name != name)
+            {
+                user.Name = name;
+                applyEdits = true;
+            }
+
+            if (user.Email != email)
+            {
+                user.Email = email;
+                applyEdits = true;
+            }
+
+            if (user.MobileNumber != mobileNumber)
+            {
+                user.MobileNumber = mobileNumber;
+                applyEdits = true;
+            }
+
+            if (applyEdits)
+                dbContext.SaveChanges();
+
+            user.Password = null;
+
+            return Ok(user);
+
         }
 
         // POST api/users
@@ -67,5 +142,13 @@ namespace CardItWebApp.Controllers
             return Ok();
         }
 
+        public string EncryptPassword(string password)
+        {
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
+            data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            String encryptedPasswordHash = System.Text.Encoding.ASCII.GetString(data);
+
+            return encryptedPasswordHash;
+        }
     }
 }
