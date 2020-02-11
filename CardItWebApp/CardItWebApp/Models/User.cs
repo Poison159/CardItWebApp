@@ -17,7 +17,7 @@ namespace CardItWebApp.Models
 
         public string Password { get; set; }
 
-        public ICollection<Card> Cards { get; set; }
+        //public ICollection<Card> Cards { get; set; }
 
     }
 }

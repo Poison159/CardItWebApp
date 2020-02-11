@@ -12,22 +12,40 @@ namespace CardItWebApp.Controllers
     public class UsersController : ApiController
     {
         private CardItContext dbContext = new CardItContext();
-        
 
         // GET api/users/x
         public IHttpActionResult Get(int id)
         {
+            //Get User
             var user = dbContext.Users.Where(x => x.Id == id).FirstOrDefault();
+            
+            //Get User cards
+            var cards = dbContext.Cards.Where(x => x.userId == user.Id).ToList();
 
-            if (user is null)
-                //User doesn't exist
-                return NotFound();
+            List<Merchant> merchants = new List<Merchant>();
 
-            return Ok(user);
+            foreach (var card in cards)
+            {
+                //Get Merchant for each card
+                var merchant = dbContext.Merchants.Where(x => x.Id == card.merchantId).FirstOrDefault();
+
+                merchants.Add(merchant);
+            }
+
+            CardRepresentative userCard = new CardRepresentative()
+            {
+                User = user,
+                Cards = cards,
+                Merchants = merchants
+            };
+
+            return Ok(userCard);
         }
 
-        [Route("api/GetRegisterUser")]
-        public IHttpActionResult GetRegisterUser(string name, string email, string mobileNumber, string password)
+
+
+        [Route("api/RegisterUser")]
+        public IHttpActionResult RegisterUser(string name, string email, string mobileNumber, string password)
         {
             var encryptedPassword = EncryptPassword(password);
 
@@ -54,8 +72,8 @@ namespace CardItWebApp.Controllers
             return Ok(newUser);
         }
 
-        [Route("api/GetUserLogin")]
-        public IHttpActionResult GetUserLogin(string name, string email, string mobileNumber, string password)
+        [Route("api/UserLogin")]
+        public IHttpActionResult UserLogin(string name, string email, string mobileNumber, string password)
         {
             //Check if user exists
             var encryptedPassword = EncryptPassword(password);
@@ -66,40 +84,25 @@ namespace CardItWebApp.Controllers
                 //User doesn't exist
                 return NotFound();
 
-            bool applyEdits = false;
-
             //Check for changes
-            if (user.Name != name)
+            if (user.Name != name || user.Email != email || user.MobileNumber != mobileNumber)
             {
                 user.Name = name;
-                applyEdits = true;
-            }
-
-            if (user.Email != email)
-            {
                 user.Email = email;
-                applyEdits = true;
-            }
-
-            if (user.MobileNumber != mobileNumber)
-            {
                 user.MobileNumber = mobileNumber;
-                applyEdits = true;
             }
 
-            if (applyEdits)
-                dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             user.Password = null;
 
             return Ok(user);
-
         }
 
         // POST api/users
         public void Post([FromBody]string value)
         {
-           
+
         }
 
         // PUT api/users/x
@@ -114,8 +117,8 @@ namespace CardItWebApp.Controllers
 
             if (existingUser != null)
             {
-                existingUser.MobileNumber   = user.MobileNumber;
-                existingUser.Email          = user.Email;
+                existingUser.MobileNumber = user.MobileNumber;
+                existingUser.Email = user.Email;
 
                 dbContext.SaveChanges();
             }
@@ -149,5 +152,13 @@ namespace CardItWebApp.Controllers
 
             return encryptedPasswordHash;
         }
+    }
+
+    public class CardRepresentative
+    {
+        public User User {get; set;}
+        public List<Card> Cards {get; set;}
+
+        public List<Merchant> Merchants {get; set;}
     }
 }
