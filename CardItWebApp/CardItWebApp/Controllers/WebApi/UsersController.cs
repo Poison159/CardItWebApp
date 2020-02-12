@@ -29,7 +29,6 @@ namespace CardItWebApp.Controllers
         [Route("api/GetRegisterUser")]
         public IHttpActionResult GetRegisterUser(string name, string email, string mobileNumber, string password)
         {
-            //Check if user exists
             var encryptedPassword = EncryptPassword(password);
 
             var user = dbContext.Users.Where(x => x.Password == encryptedPassword).FirstOrDefault();

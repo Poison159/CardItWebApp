@@ -9,9 +9,9 @@ namespace CardItWebApp.Models
     {
         public int Id { get; set; }
 
-        //public User User{ get; set; }
+        public int userId { get; set; }
 
-        public Merchant Merchant { get; set; }
+        public int merchantId { get; set; }
 
         public string CardNumber { get; set; }
 

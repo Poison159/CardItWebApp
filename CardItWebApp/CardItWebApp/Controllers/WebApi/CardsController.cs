@@ -25,7 +25,6 @@ namespace CardItWebApp.Controllers.WebApi
         public Card Get(int id)
         {
             var card = dbContext.Cards.Where(x => x.Id == id).FirstOrDefault();
-
             return card;
         }
 
@@ -57,6 +56,26 @@ namespace CardItWebApp.Controllers.WebApi
                 return NotFound();
 
             return Ok();
+        }
+        [Route("api/AddCard")]
+        public IHttpActionResult AddCard(string merchantName, string cardNumber, string userId )
+        {
+            try
+            {
+                var user = dbContext.Users.Find(Convert.ToInt32(userId));
+                var card = new Card();
+                card.userId = Convert.ToInt32(userId);
+                card.CardNumber = cardNumber;
+                card.merchantId = dbContext.Merchants.ToList().First(x => x.Name.ToLower().Trim() == merchantName.ToLower().ToString()).Id;
+                dbContext.Cards.Add(card);
+                dbContext.SaveChanges();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            
         }
 
         // DELETE api/cards/5
